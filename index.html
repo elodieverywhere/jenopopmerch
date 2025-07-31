@@ -27,25 +27,27 @@
     </table>
 
     <script>
-fetch("data/sales_log.json")
-  .then(response => response.json())
-  .then(data => {
-    const tbody = document.querySelector("tbody");
-    let prevSold = null;
+function loadData() {
+  fetch("sales_log.json")
+    .then(response => response.json())
+    .then(data => {
+      const tbody = document.querySelector("tbody");
+      tbody.innerHTML = ""; // 每次刷新先清空旧数据
+      let prevSold = null;
 
-    data.forEach(row => {
-      const tr = document.createElement("tr");
-      const sold = 99999 - row.stock;
-      const diff = prevSold === null ? 0 : sold - prevSold;
-      prevSold = sold;
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        const sold = 99999 - row.stock;
+        const diff = prevSold === null ? 0 : sold - prevSold;
+        prevSold = sold;
 
-      tr.innerHTML = `<td>${row.time}</td><td>${sold}</td><td>${diff >= 0 ? '-' + diff : diff}</td><td>${row.stock}</td>`;
-      tbody.appendChild(tr);
+        tr.innerHTML = `<td>${row.time}</td><td>${sold}</td><td>${diff >= 0 ? '+' + diff : diff}</td><td>${row.stock}</td>`;
+        tbody.appendChild(tr);
+      });
     });
-  });
+}
 
-
-        loadData();
+loadData();
     </script>
 </body>
 </html>
