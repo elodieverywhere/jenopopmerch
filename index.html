@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>李帝努销量监控</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>李帝努销量监控</h1>
+    <button onclick="loadData()">🔄 刷新数据</button>
+    <table id="sales-table">
+        <thead>
+            <tr>
+                <th>时间</th>
+                <th>销量</th>
+                <th>变化</th>
+                <th>库存</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+fetch("data/sales_log.json")
+  .then(response => response.json())
+  .then(data => {
+    const tbody = document.querySelector("tbody");
+    let prevSold = null;
+
+    data.forEach(row => {
+      const tr = document.createElement("tr");
+      const sold = 99999 - row.stock;
+      const diff = prevSold === null ? 0 : sold - prevSold;
+      prevSold = sold;
+
+      tr.innerHTML = `<td>${row.time}</td><td>${sold}</td><td>${diff >= 0 ? '-' + diff : diff}</td><td>${row.stock}</td>`;
+      tbody.appendChild(tr);
+    });
+  });
+
+
+        loadData();
+    </script>
+</body>
+</html>
